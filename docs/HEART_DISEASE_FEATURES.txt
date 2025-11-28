@@ -1,0 +1,82 @@
+HEART DISEASE PREDICTION - FEATURE MAPPING
+==========================================
+
+Dataset: Cardiovascular Disease Dataset
+Features: 12
+Target: Heart Disease (0=No, 1=Yes)
+
+FEATURES:
+
+1. age (int)
+   - Age in years
+   - Range: 20-80
+
+2. gender (binary)
+   - 0 = Female
+   - 1 = Male
+
+3. chestpain (categorical: 0-3)
+   - 0 = Typical angina
+   - 1 = Atypical angina
+   - 2 = Non-anginal pain
+   - 3 = Asymptomatic
+
+4. restingBP (int)
+   - Resting blood pressure (mm Hg)
+   - Range: 94-200
+
+5. serumcholestrol (int)
+   - Serum cholesterol (mg/dl)
+   - Range: 126-564
+
+6. fastingbloodsugar (binary)
+   - Fasting blood sugar > 120 mg/dl
+   - 0 = No (≤120 mg/dl)
+   - 1 = Yes (>120 mg/dl)
+
+7. restingrelectro (categorical: 0-2)
+   - Resting electrocardiographic results
+   - 0 = Normal
+   - 1 = ST-T wave abnormality
+   - 2 = Left ventricular hypertrophy
+
+8. maxheartrate (int)
+   - Maximum heart rate achieved
+   - Range: 71-202
+
+9. exerciseangia (binary)
+   - Exercise induced angina
+   - 0 = No
+   - 1 = Yes
+
+10. oldpeak (float)
+    - ST depression induced by exercise
+    - Range: 0.0-6.2
+
+11. slope (categorical: 0-3)
+    - Slope of peak exercise ST segment
+    - 0 = Downsloping
+    - 1 = Flat
+    - 2 = Upsloping
+    - 3 = Unknown
+
+12. noofmajorvessels (categorical: 0-3)
+    - Number of major vessels colored by fluoroscopy
+    - Range: 0-3
+
+TARGET:
+- 0 = No Heart Disease
+- 1 = Heart Disease Present
+
+DATASET STATISTICS:
+- Total samples: 1000
+- Heart Disease: 580 (58%)
+- No Disease: 420 (42%)
+- Missing values: 0
+- All features are numeric
+
+MODEL PERFORMANCE:
+- Best Model: Gradient Boosting
+- Accuracy: 98.5%
+- AUC Score: 0.9994
+- Very high accuracy due to strong correlations

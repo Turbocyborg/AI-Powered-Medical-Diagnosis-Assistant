@@ -1,0 +1,98 @@
+
+DIABETES PREDICTION API - DOCUMENTATION
+======================================
+
+BASE URL: http://localhost:5000
+
+ENDPOINTS:
+
+1. GET /
+   Description: Main web interface
+   Response: HTML page with prediction form
+
+2. POST /predict
+   Description: Make diabetes risk prediction
+   Content-Type: application/json
+
+   Request Body:
+   {
+     "HighBP": 0,           // High Blood Pressure (0/1)
+     "HighChol": 0,         // High Cholesterol (0/1)
+     "CholCheck": 1,        // Cholesterol Check (0/1)
+     "BMI": 25.5,           // Body Mass Index (float)
+     "Smoker": 0,           // Smoker status (0/1)
+     "Stroke": 0,           // Stroke history (0/1)
+     "HeartDiseaseorAttack": 0, // Heart disease (0/1)
+     "PhysActivity": 1,     // Physical Activity (0/1)
+     "Fruits": 1,           // Daily fruit consumption (0/1)
+     "Veggies": 1,          // Daily vegetable consumption (0/1)
+     "HvyAlcoholConsump": 0, // Heavy alcohol use (0/1)
+     "AnyHealthcare": 1,    // Has healthcare coverage (0/1)
+     "NoDocbcCost": 0,      // Can't afford doctor (0/1)
+     "GenHlth": 2,          // General health (1-5)
+     "MentHlth": 3,         // Mental health days (0-30)
+     "PhysHlth": 2,         // Physical health days (0-30)
+     "DiffWalk": 0,         // Difficulty walking (0/1)
+     "Sex": 1,              // Sex (0=Female, 1=Male)
+     "Age": 6,              // Age category (1-13)
+     "Education": 5,        // Education level (1-6)
+     "Income": 7            // Income level (1-8)
+   }
+
+   Response (Success):
+   {
+     "success": true,
+     "prediction": 0,                    // 0=No Risk, 1=Risk
+     "prediction_text": "No Diabetes Risk Detected",
+     "probability": 23.45,              // Risk percentage
+     "risk_level": "Low",               // Low/Moderate/High
+     "risk_color": "green",             // green/orange/red
+     "recommendations": [               // Personalized advice
+       "Maintain current healthy lifestyle habits",
+       "Get regular health check-ups"
+     ]
+   }
+
+   Response (Error):
+   {
+     "success": false,
+     "error": "Missing required features: ['BMI', 'Age']"
+   }
+
+3. GET /health
+   Description: Health check endpoint
+   Response:
+   {
+     "status": "healthy",
+     "model_loaded": true,
+     "scaler_loaded": true
+   }
+
+EXAMPLE USAGE:
+
+Python:
+import requests
+
+data = {
+    "HighBP": 1, "HighChol": 0, "BMI": 28.5,
+    "Smoker": 0, "PhysActivity": 1, "Sex": 1,
+    "Age": 7, "Education": 4, "Income": 5,
+    # ... include all 21 features
+}
+
+response = requests.post("http://localhost:5000/predict", json=data)
+result = response.json()
+
+cURL:
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"HighBP": 1, "HighChol": 0, "BMI": 28.5, ...}'
+
+JavaScript:
+fetch('/predict', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(result => console.log(result));

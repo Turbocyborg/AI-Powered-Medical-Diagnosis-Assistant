@@ -1,0 +1,44 @@
+
+BRFSS DIABETES DATASET - FEATURE MAPPING GUIDE
+==============================================
+
+INPUT FEATURES (21 total):
+
+1. DEMOGRAPHIC FEATURES (4):
+   - Age: 1-13 (age groups from 18-24 to 80+)
+   - Sex: 0=Female, 1=Male
+   - Education: 1-6 (Never attended to College graduate)
+   - Income: 1-8 ($10K increments from <$10K to $75K+)
+
+2. HEALTH CONDITIONS (6):
+   - HighBP: 0=No, 1=Yes (High Blood Pressure)
+   - HighChol: 0=No, 1=Yes (High Cholesterol)
+   - CholCheck: 0=No, 1=Yes (Cholesterol check in 5 years)
+   - BMI: Continuous (Body Mass Index, typically 15-50)
+   - Stroke: 0=No, 1=Yes (Ever had a stroke)
+   - HeartDiseaseorAttack: 0=No, 1=Yes (Heart disease/attack)
+
+3. LIFESTYLE FACTORS (5):
+   - Smoker: 0=No, 1=Yes (Smoked 100+ cigarettes)
+   - PhysActivity: 0=No, 1=Yes (Physical activity in 30 days)
+   - Fruits: 0=No, 1=Yes (Consume fruit 1+ times/day)
+   - Veggies: 0=No, 1=Yes (Consume vegetables 1+ times/day)
+   - HvyAlcoholConsump: 0=No, 1=Yes (Heavy alcohol consumption)
+
+4. HEALTHCARE ACCESS (6):
+   - AnyHealthcare: 0=No, 1=Yes (Have health coverage)
+   - NoDocbcCost: 0=No, 1=Yes (Couldn't see doctor due to cost)
+   - GenHlth: 1-5 (1=Excellent to 5=Poor general health)
+   - MentHlth: 0-30 (Days of poor mental health)
+   - PhysHlth: 0-30 (Days of poor physical health)
+   - DiffWalk: 0=No, 1=Yes (Difficulty walking/climbing stairs)
+
+TARGET VARIABLE:
+   - Diabetes_binary: 0=No Diabetes, 1=Prediabetes/Diabetes
+
+DATASET STATISTICS:
+   - Total samples: ~253,680 (BRFSS 2015)
+   - Binary features: 14
+   - Continuous features: 3  
+   - Ordinal features: 4
+   - Typical class distribution: ~85% No Diabetes, ~15% Diabetes

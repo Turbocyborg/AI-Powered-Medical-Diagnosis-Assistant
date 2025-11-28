@@ -1,0 +1,22 @@
+Feature,Description,Data_Type
+HighBP,"High Blood Pressure (0=No, 1=Yes)",Binary
+HighChol,"High Cholesterol (0=No, 1=Yes)",Binary
+CholCheck,"Cholesterol Check in 5 years (0=No, 1=Yes)",Binary
+BMI,Body Mass Index,Continuous
+Smoker,"Smoked at least 100 cigarettes (0=No, 1=Yes)",Binary
+Stroke,"Ever had a stroke (0=No, 1=Yes)",Binary
+HeartDiseaseorAttack,"Coronary heart disease or myocardial infarction (0=No, 1=Yes)",Binary
+PhysActivity,"Physical activity in past 30 days (0=No, 1=Yes)",Binary
+Fruits,"Consume fruit 1+ times per day (0=No, 1=Yes)",Binary
+Veggies,"Consume vegetables 1+ times per day (0=No, 1=Yes)",Binary
+HvyAlcoholConsump,"Heavy alcohol consumption (0=No, 1=Yes)",Binary
+AnyHealthcare,"Have any kind of health care coverage (0=No, 1=Yes)",Binary
+NoDocbcCost,"Could not see doctor due to cost (0=No, 1=Yes)",Binary
+GenHlth,"General health (1=Excellent, 2=Very Good, 3=Good, 4=Fair, 5=Poor)",Ordinal
+MentHlth,Mental health (0-30 days),Continuous
+PhysHlth,Physical health (0-30 days),Continuous
+DiffWalk,"Difficulty walking/climbing stairs (0=No, 1=Yes)",Binary
+Sex,"Sex (0=Female, 1=Male)",Binary
+Age,"Age category (1-13, 13 categories)",Ordinal
+Education,Education level (1-6 scale),Ordinal
+Income,Income level (1-8 scale),Ordinal

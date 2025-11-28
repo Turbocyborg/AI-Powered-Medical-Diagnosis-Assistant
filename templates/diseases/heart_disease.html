@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Risk Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+        }
+        
+        .card-custom {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #f5576c;
+            box-shadow: 0 0 0 0.2rem rgba(245, 87, 108, 0.25);
+        }
+        
+        .btn-predict {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+        
+        .result-card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        .risk-low { border-left: 5px solid #28a745; }
+        .risk-moderate { border-left: 5px solid #ffc107; }
+        .risk-high { border-left: 5px solid #dc3545; }
+        
+        .loading { display: none; }
+        .form-group { margin-bottom: 1rem; }
+        
+        .section-title {
+            color: #f5576c;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #f5576c;
+            padding-bottom: 0.5rem;
+        }
+        
+        .recommendation-item {
+            background: #fff5f7;
+            border-left: 4px solid #f5576c;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        
+        .back-btn:hover {
+            opacity: 0.8;
+            color: white;
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Back Button -->
+                <a href="/" class="back-btn mb-3 d-inline-block">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Disease Selection
+                </a>
+                
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <h1 class="text-white mb-3">
+                        <i class="fas fa-heart me-3"></i>
+                        Heart Disease Risk Prediction
+                    </h1>
+                    <p class="text-white-50">Enter your cardiovascular health information for AI-powered risk assessment</p>
+                </div>
+
+                {% if not model_available %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Model not available. Please train the heart disease model first by running: <code>python train_models/train_heart_disease.py</code>
+                </div>
+                {% endif %}
+
+                <!-- Main Form Card -->
+                <div class="card card-custom">
+                    <div class="card-header bg-danger text-white text-center">
+                        <h4 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Cardiovascular Assessment Form</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="predictionForm">
+                            <!-- Basic Information -->
+                            <h5 class="section-title">Basic Information</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="age" class="form-label">Age</label>
+                                        <input type="number" class="form-control" id="age" name="age" 
+                                               min="20" max="100" required>
+                                        <small class="form-text text-muted">Age in years</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="gender" class="form-label">Gender</label>
+                                        <select class="form-select" id="gender" name="gender" required>
+                                            <option value="">Select Gender</option>
+                                            <option value="0">Female</option>
+                                            <option value="1">Male</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Symptoms -->
+                            <h5 class="section-title mt-4">Symptoms & Clinical Signs</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="chestpain" class="form-label">Chest Pain Type</label>
+                                        <select class="form-select" id="chestpain" name="chestpain" required>
+                                            <option value="">Select Type</option>
+                                            <option value="0">Typical Angina</option>
+                                            <option value="1">Atypical Angina</option>
+                                            <option value="2">Non-Anginal Pain</option>
+                                            <option value="3">Asymptomatic</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exerciseangia" class="form-label">Exercise Induced Angina</label>
+                                        <select class="form-select" id="exerciseangia" name="exerciseangia" required>
+                                            <option value="">Select</option>
+                                            <option value="0">No</option>
+                                            <option value="1">Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vital Signs -->
+                            <h5 class="section-title mt-4">Vital Signs & Lab Results</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="restingBP" class="form-label">Resting Blood Pressure</label>
+                                        <input type="number" class="form-control" id="restingBP" name="restingBP" 
+                                               min="80" max="220" required>
+                                        <small class="form-text text-muted">mm Hg</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="serumcholestrol" class="form-label">Serum Cholesterol</label>
+                                        <input type="number" class="form-control" id="serumcholestrol" name="serumcholestrol" 
+                                               min="100" max="600" required>
+                                        <small class="form-text text-muted">mg/dl</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="maxheartrate" class="form-label">Max Heart Rate</label>
+                                        <input type="number" class="form-control" id="maxheartrate" name="maxheartrate" 
+                                               min="60" max="220" required>
+                                        <small class="form-text text-muted">bpm</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fastingbloodsugar" class="form-label">Fasting Blood Sugar > 120 mg/dl</label>
+                                        <select class="form-select" id="fastingbloodsugar" name="fastingbloodsugar" required>
+                                            <option value="">Select</option>
+                                            <option value="0">No (≤120 mg/dl)</option>
+                                            <option value="1">Yes (>120 mg/dl)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="oldpeak" class="form-label">ST Depression (Oldpeak)</label>
+                                        <input type="number" class="form-control" id="oldpeak" name="oldpeak" 
+                                               min="0" max="7" step="0.1" required>
+                                        <small class="form-text text-muted">Induced by exercise</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ECG Results -->
+                            <h5 class="section-title mt-4">ECG & Cardiac Tests</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="restingrelectro" class="form-label">Resting ECG</label>
+                                        <select class="form-select" id="restingrelectro" name="restingrelectro" required>
+                                            <option value="">Select Result</option>
+                                            <option value="0">Normal</option>
+                                            <option value="1">ST-T Wave Abnormality</option>
+                                            <option value="2">Left Ventricular Hypertrophy</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="slope" class="form-label">ST Segment Slope</label>
+                                        <select class="form-select" id="slope" name="slope" required>
+                                            <option value="">Select Slope</option>
+                                            <option value="0">Downsloping</option>
+                                            <option value="1">Flat</option>
+                                            <option value="2">Upsloping</option>
+                                            <option value="3">Unknown</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="noofmajorvessels" class="form-label">Major Vessels</label>
+                                        <select class="form-select" id="noofmajorvessels" name="noofmajorvessels" required>
+                                            <option value="">Select Number</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                        <small class="form-text text-muted">Colored by fluoroscopy</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-predict btn-lg" {% if not model_available %}disabled{% endif %}>
+                                    <i class="fas fa-heartbeat me-2"></i>
+                                    Predict Heart Disease Risk
+                                </button>
+                            </div>
+
+                            <!-- Loading Indicator -->
+                            <div class="text-center mt-3 loading" id="loading">
+                                <div class="spinner-border text-danger" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Analyzing your cardiovascular data...</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Result Card -->
+                <div id="resultCard" class="card result-card" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Prediction Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="predictionResult"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultCard').style.display = 'none';
+            
+            const data = {};
+            const inputs = e.target.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                data[input.name] = input.value;
+            });
+            
+            try {
+                const response = await fetch('/predict/heart_disease', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                displayResult(result);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                displayError('An error occurred while making the prediction.');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+        
+        function displayResult(result) {
+            const resultCard = document.getElementById('resultCard');
+            const resultContent = document.getElementById('predictionResult');
+            
+            if (result.success) {
+                let riskClass = 'risk-low';
+                if (result.risk_level === 'Moderate') riskClass = 'risk-moderate';
+                else if (result.risk_level === 'High') riskClass = 'risk-high';
+                
+                resultCard.className = `card result-card ${riskClass}`;
+                
+                let html = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 style="color: ${result.risk_color};">
+                                <i class="fas fa-${result.prediction == 1 ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
+                                ${result.prediction_text}
+                            </h4>
+                            <p><strong>Risk Probability:</strong> ${result.probability}%</p>
+                            <p><strong>Risk Level:</strong> <span style="color: ${result.risk_color};">${result.risk_level}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-center">
+                                <div class="progress-circle" style="width: 120px; height: 120px; position: relative;">
+                                    <svg width="120" height="120" style="transform: rotate(-90deg);">
+                                        <circle cx="60" cy="60" r="50" stroke="#e0e0e0" stroke-width="8" fill="none"/>
+                                        <circle cx="60" cy="60" r="50" stroke="${result.risk_color}" stroke-width="8" 
+                                               fill="none" stroke-dasharray="314" 
+                                               stroke-dashoffset="${314 - (314 * result.probability / 100)}"/>
+                                    </svg>
+                                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                        <strong style="color: ${result.risk_color}; font-size: 18px;">${result.probability}%</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                if (result.recommendations && result.recommendations.length > 0) {
+                    html += `<hr><h5><i class="fas fa-lightbulb me-2"></i>Personalized Recommendations</h5>`;
+                    result.recommendations.forEach(rec => {
+                        html += `<div class="recommendation-item"><i class="fas fa-arrow-right me-2"></i>${rec}</div>`;
+                    });
+                }
+                
+                resultContent.innerHTML = html;
+            } else {
+                resultContent.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Error:</strong> ${result.error}
+                    </div>
+                `;
+            }
+            
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function displayError(message) {
+            const resultCard = document.getElementById('resultCard');
+            const resultContent = document.getElementById('predictionResult');
+            
+            resultContent.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Error:</strong> ${message}
+                </div>
+            `;
+            
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
