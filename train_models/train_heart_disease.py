@@ -214,8 +214,8 @@ def main():
     print("HEART DISEASE PREDICTION MODEL TRAINING")
     print("="*50)
     
-    # Load data
-    dataset_path = 'data/Cardiovascular_Disease_Dataset.csv'
+    # Load data and retain data
+    dataset_path = ("F:\\ML_PROJECT\AI-Powered-Medical-Diagnosis-Assistant\data\Cardiovascular_Disease_Dataset.csv")
     df = load_and_preprocess_data(dataset_path)
     
     if df is None:
