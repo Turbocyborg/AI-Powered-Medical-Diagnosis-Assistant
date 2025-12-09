@@ -115,7 +115,8 @@ def main():
     print("SIMPLIFIED KIDNEY DISEASE MODEL TRAINING")
     print("="*50)
     
-    df = load_and_preprocess_data('data/CKD.csv')
+    #Load and retrain data
+    df = load_and_preprocess_data("F:\\ML_PROJECT\AI-Powered-Medical-Diagnosis-Assistant\data\CKD.csv")
     
     X = df[SIMPLIFIED_FEATURES]
     y = df['Diagnosis']
