@@ -1,249 +1,272 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Multi-Disease Prediction System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .disease-card {
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            height: 100%;
-        }
-        
-        .disease-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
-        
-        .disease-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero-section {
-            padding: 4rem 0;
-            text-align: center;
-            color: white;
-        }
-        
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            color: white;
-            font-weight: 600;
-        }
-        
-        .card-body {
-            padding: 2rem;
-        }
-        
-        .btn-predict {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 25px;
-            padding: 10px 25px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-predict:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            color: white;
-        }
-        
-        .feature-box {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            color: white;
-        }
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .disease-card {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: none;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        cursor: pointer;
+        height: 100%;
+      }
+
+      .disease-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .disease-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+      }
+
+      .hero-section {
+        padding: 4rem 0;
+        text-align: center;
+        color: white;
+      }
+
+      .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: white;
+        font-weight: 600;
+      }
+
+      .card-body {
+        padding: 2rem;
+      }
+
+      .btn-predict {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 10px 25px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-predict:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        color: white;
+      }
+
+      .feature-box {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        color: white;
+      }
     </style>
-</head>
-<body class="gradient-bg">
+  </head>
+  <body class="gradient-bg">
     <!-- Hero Section -->
     <div class="hero-section">
-        <div class="container">
-            <h1 class="hero-title">
-                <i class="fas fa-heartbeat me-3"></i>
-                AI-Powered Medical Diagnosis
-            </h1>
-            <p class="hero-subtitle">
-                Advanced machine learning for early disease detection and risk assessment
-            </p>
-        </div>
+      <div class="container">
+        <h1 class="hero-title">
+          <i class="fas fa-heartbeat me-3"></i>
+          AI-Powered Medical Diagnosis
+        </h1>
+        <p class="hero-subtitle">
+          Advanced machine learning for early disease detection and risk
+          assessment
+        </p>
+      </div>
     </div>
 
     <!-- Disease Selection Section -->
     <div class="container pb-5">
-        <h2 class="section-title">Select a Disease for Prediction</h2>
-        
-        <div class="row g-4">
-            <!-- Diabetes Card -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card disease-card" onclick="window.location.href='/disease/diabetes'">
-                    <div class="card-body text-center">
-                        <div class="disease-icon text-primary">
-                            <i class="fas fa-syringe"></i>
-                        </div>
-                        <h3 class="card-title">Diabetes</h3>
-                        <p class="card-text text-muted">
-                            Predict diabetes risk using 21 health indicators from BRFSS dataset
-                        </p>
-                        <a href="/disease/diabetes" class="btn btn-predict">
-                            Start Assessment <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+      <h2 class="section-title">Select a Disease for Prediction</h2>
 
-            <!-- Heart Disease Card -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card disease-card" onclick="window.location.href='/disease/heart_disease'">
-                    <div class="card-body text-center">
-                        <div class="disease-icon text-danger">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <h3 class="card-title">Heart Disease</h3>
-                        <p class="card-text text-muted">
-                            <!-- by Jocelyn Dumlao (Kaggle) -->
-                            Predict heart disease risk using 12 clinical indicators from Cardiovascular Disease dataset
-                        </p>
-                        <a href="/disease/heart_disease" class="btn btn-predict">
-                            Start Assessment <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
+      <div class="row g-4">
+        <!-- Diabetes Card -->
+        <div class="col-md-6 col-lg-4">
+          <div
+            class="card disease-card"
+            onclick="window.location.href = '/disease/diabetes'"
+          >
+            <div class="card-body text-center">
+              <div class="disease-icon text-primary">
+                <i class="fas fa-syringe"></i>
+              </div>
+              <h3 class="card-title">Diabetes</h3>
+              <p class="card-text text-muted">
+                Predict diabetes risk using 21 health indicators from BRFSS
+                dataset
+              </p>
+              <a href="/disease/diabetes" class="btn btn-predict">
+                Start Assessment <i class="fas fa-arrow-right ms-2"></i>
+              </a>
             </div>
-
-            <!-- Cancer Card (Coming Soon) -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card disease-card opacity-75">
-                    <div class="card-body text-center">
-                        <div class="disease-icon text-warning">
-                            <i class="fas fa-ribbon"></i>
-                        </div>
-                        <h3 class="card-title">Cancer</h3>
-                        <p class="card-text text-muted">
-                            Cancer risk prediction and screening
-                        </p>
-                        <button class="btn btn-secondary" disabled>
-                            Coming Soon
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kidney Disease Card -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card disease-card" onclick="window.location.href='/disease/kidney_disease'">
-                    <div class="card-body text-center">
-                        <div class="disease-icon text-info">
-                            <i class="fas fa-prescription-bottle-alt"></i>
-                        </div>
-                        <h3 class="card-title">Kidney Disease</h3>
-                        <p class="card-text text-muted">
-                            <!-- by Rabie El Kharoua (Kaggle) -->
-                            Predict kidney disease risk using 23 health indicators from Chronic Kidney Disease dataset
-                        </p>
-                        <a href="/disease/kidney_disease" class="btn btn-predict">
-                            Start Assessment <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Liver Disease Card (Coming Soon) -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card disease-card opacity-75">
-                    <div class="card-body text-center">
-                        <div class="disease-icon text-success">
-                            <i class="fas fa-lungs"></i>
-                        </div>
-                        <h3 class="card-title">Liver Disease</h3>
-                        <p class="card-text text-muted">
-                            Liver disease prediction and monitoring
-                        </p>
-                        <button class="btn btn-secondary" disabled>
-                            Coming Soon
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stroke Card (Coming Soon) -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card disease-card opacity-75">
-                    <div class="card-body text-center">
-                        <div class="disease-icon text-dark">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h3 class="card-title">Stroke</h3>
-                        <p class="card-text text-muted">
-                            Stroke risk prediction and prevention
-                        </p>
-                        <button class="btn btn-secondary" disabled>
-                            Coming Soon
-                        </button>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
 
-        <!-- Features Section -->
-        <div class="row mt-5">
-            <div class="col-md-4">
-                <div class="feature-box">
-                    <h4><i class="fas fa-robot me-2"></i>AI-Powered</h4>
-                    <p>Advanced machine learning algorithms for accurate predictions</p>
-                </div>
+        <!-- Heart Disease Card -->
+        <div class="col-md-6 col-lg-4">
+          <div
+            class="card disease-card"
+            onclick="window.location.href = '/disease/heart_disease'"
+          >
+            <div class="card-body text-center">
+              <div class="disease-icon text-danger">
+                <i class="fas fa-heart"></i>
+              </div>
+              <h3 class="card-title">Heart Disease</h3>
+              <p class="card-text text-muted">
+                <!-- by Jocelyn Dumlao (Kaggle) -->
+                Predict heart disease risk using 12 clinical indicators from
+                Cardiovascular Disease dataset
+              </p>
+              <a href="/disease/heart_disease" class="btn btn-predict">
+                Start Assessment <i class="fas fa-arrow-right ms-2"></i>
+              </a>
             </div>
-            <div class="col-md-4">
-                <div class="feature-box">
-                    <h4><i class="fas fa-shield-alt me-2"></i>Secure & Private</h4>
-                    <p>Your health data is processed securely and never stored</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-box">
-                    <h4><i class="fas fa-clock me-2"></i>Instant Results</h4>
-                    <p>Get immediate risk assessment and personalized recommendations</p>
-                </div>
-            </div>
+          </div>
         </div>
 
-        <!-- Disclaimer -->
-        <div class="alert alert-warning mt-4" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <strong>Medical Disclaimer:</strong> This tool is for educational and screening purposes only. 
-            Always consult with healthcare professionals for proper medical diagnosis and treatment.
+        <!-- Breast Cancer Card -->
+        <div class="col-md-6 col-lg-4">
+          <div
+            class="card disease-card"
+            onclick="window.location.href = '/disease/breast_cancer'"
+          >
+            <div class="card-body text-center">
+              <div class="disease-icon text-warning">
+                <i class="fas fa-ribbon"></i>
+              </div>
+              <h3 class="card-title">Breast Cancer</h3>
+              <p class="card-text text-muted">
+                Breast cancer risk prediction and screening
+              </p>
+              <a href="/disease/breast_cancer" class="btn btn-predict">
+                Start Assessment <i class="fas fa-arrow-right ms-2"></i>
+              </a>
+            </div>
+          </div>
         </div>
+
+        <!-- Kidney Disease Card -->
+        <div class="col-md-6 col-lg-4">
+          <div
+            class="card disease-card"
+            onclick="window.location.href = '/disease/kidney_disease'"
+          >
+            <div class="card-body text-center">
+              <div class="disease-icon text-info">
+                <i class="fas fa-prescription-bottle-alt"></i>
+              </div>
+              <h3 class="card-title">Kidney Disease</h3>
+              <p class="card-text text-muted">
+                <!-- by Rabie El Kharoua (Kaggle) -->
+                Predict kidney disease risk using 23 health indicators from
+                Chronic Kidney Disease dataset
+              </p>
+              <a href="/disease/kidney_disease" class="btn btn-predict">
+                Start Assessment <i class="fas fa-arrow-right ms-2"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Liver Disease Card (Coming Soon) -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card disease-card opacity-75">
+            <div class="card-body text-center">
+              <div class="disease-icon text-success">
+                <i class="fas fa-lungs"></i>
+              </div>
+              <h3 class="card-title">Liver Disease</h3>
+              <p class="card-text text-muted">
+                Liver disease prediction and monitoring
+              </p>
+              <button class="btn btn-secondary" disabled>Coming Soon</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pneumonia Card (Coming Soon) -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card disease-card opacity-75">
+            <div class="card-body text-center">
+              <div class="disease-icon text-primary">
+                <i class="fas fa-lungs-virus"></i>
+              </div>
+              <h3 class="card-title">Pneumonia</h3>
+              <p class="card-text text-muted">
+                Pneumonia risk prediction and early detection
+              </p>
+              <button class="btn btn-secondary" disabled>Coming Soon</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Section -->
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <div class="feature-box">
+            <h4><i class="fas fa-robot me-2"></i>AI-Powered</h4>
+            <p>Advanced machine learning algorithms for accurate predictions</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <h4><i class="fas fa-shield-alt me-2"></i>Secure & Private</h4>
+            <p>Your health data is processed securely and never stored</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <h4><i class="fas fa-clock me-2"></i>Instant Results</h4>
+            <p>
+              Get immediate risk assessment and personalized recommendations
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="alert alert-warning mt-4" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Medical Disclaimer:</strong> This tool is for educational and
+        screening purposes only. Always consult with healthcare professionals
+        for proper medical diagnosis and treatment.
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  </body>
 </html>

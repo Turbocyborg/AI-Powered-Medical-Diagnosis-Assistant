@@ -26,6 +26,12 @@ python train_models/train_diabetes.py
 python app.py
 ```
 
+Or using uvicorn directly:
+
+```bash
+uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+```
+
 ### 5. Open Browser
 
 Visit: http://localhost:5000
@@ -200,16 +206,16 @@ After basic setup:
 
 - **Datasets**: Kaggle, UCI ML Repository, CDC
 - **ML Tutorials**: Scikit-learn documentation
-- **Flask Docs**: flask.palletsprojects.com
+- **FastAPI Docs**: fastapi.tiangolo.com
 - **Bootstrap**: getbootstrap.com
 
 ## Support
 
 Need help?
 
-1. Check PROJECT_STRUCTURE.md for architecture
+1. Check README.md for architecture overview
 2. Review existing diabetes implementation
-3. Read API_DOCUMENTATION.txt for endpoints
-4. Check feature_mapping.txt for data formats
+3. Read docs/API_DOCUMENTATION.txt for endpoints
+4. Check docs/feature_mapping.txt for data formats
 
 Happy coding! 🚀

@@ -300,3 +300,120 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# ==================================================
+# DIABETES PREDICTION MODEL TRAINING
+# ==================================================
+# Loading BRFSS diabetes dataset...
+# Dataset loaded successfully: (253680, 22)
+# Converted Diabetes_012 to Diabetes_binary
+# Diabetes prevalence: 0.158
+# Missing values: 0
+
+# Features: 21
+# Train set: (202944, 21)
+# Test set: (50736, 21)
+
+# Applying SMOTE for class balancing...
+# Original class distribution: [170962  31982]
+# Class ratio: 5.35:1
+# Balanced class distribution: [170962 136769]
+# New class ratio: 1.25:1
+
+# Scaling features...
+
+# ==================================================
+# MODEL TRAINING AND EVALUATION
+# ==================================================
+
+# Training Logistic Regression...
+# Logistic Regression - Accuracy: 0.7298, AUC: 0.8153
+#               precision    recall  f1-score   support
+
+#            0       0.94      0.73      0.82     42741
+#            1       0.34      0.75      0.47      7995
+
+#     accuracy                           0.73     50736
+#    macro avg       0.64      0.74      0.64     50736
+# weighted avg       0.85      0.73      0.76     50736
+
+# Confusion Matrix:
+# [[30992 11749]
+#  [ 1959  6036]]
+# True Negatives: 30992, False Positives: 11749
+# False Negatives: 1959, True Positives: 6036
+
+# Training Random Forest...
+# Random Forest - Accuracy: 0.8423, AUC: 0.8115
+#               precision    recall  f1-score   support
+
+#            0       0.88      0.94      0.91     42741
+#            1       0.50      0.32      0.39      7995
+
+#     accuracy                           0.84     50736
+#    macro avg       0.69      0.63      0.65     50736
+# weighted avg       0.82      0.84      0.83     50736
+
+# Confusion Matrix:
+# [[40185  2556]
+#  [ 5443  2552]]
+# True Negatives: 40185, False Positives: 2556
+# False Negatives: 5443, True Positives: 2552
+
+# Training Gradient Boosting...
+# Gradient Boosting - Accuracy: 0.8501, AUC: 0.8209
+#               precision    recall  f1-score   support
+
+#            0       0.87      0.96      0.92     42741
+#            1       0.55      0.26      0.35      7995
+
+#     accuracy                           0.85     50736
+#    macro avg       0.71      0.61      0.63     50736
+# weighted avg       0.82      0.85      0.83     50736
+
+# Confusion Matrix:
+# [[41060  1681]
+#  [ 5924  2071]]
+# True Negatives: 41060, False Positives: 1681
+# False Negatives: 5924, True Positives: 2071
+
+# Training XGBoost...
+# XGBoost - Accuracy: 0.8517, AUC: 0.8218
+#               precision    recall  f1-score   support
+
+#            0       0.87      0.97      0.92     42741
+#            1       0.57      0.23      0.33      7995
+
+#     accuracy                           0.85     50736
+#    macro avg       0.72      0.60      0.62     50736
+# weighted avg       0.82      0.85      0.82     50736
+
+# Confusion Matrix:
+# [[41375  1366]
+#  [ 6160  1835]]
+# True Negatives: 41375, False Positives: 1366
+# False Negatives: 6160, True Positives: 1835
+
+# ==================================================
+# MODEL COMPARISON
+# ==================================================
+# Logistic Regression       - Accuracy: 0.7298, AUC: 0.8153
+# Random Forest             - Accuracy: 0.8423, AUC: 0.8115
+# Gradient Boosting         - Accuracy: 0.8501, AUC: 0.8209
+# XGBoost                   - Accuracy: 0.8517, AUC: 0.8218
+
+# ==================================================
+# BEST MODEL: XGBoost
+# Accuracy: 0.8517
+# AUC Score: 0.8218
+# ==================================================
+
+# Model saved to: models/diabetes\model.pkl
+# Scaler saved to: models/diabetes\scaler.pkl
+
+# ==================================================
+# TRAINING COMPLETED SUCCESSFULLY!
+# ==================================================
+# Best model: XGBoost
+
+# You can now run the Flask application!
