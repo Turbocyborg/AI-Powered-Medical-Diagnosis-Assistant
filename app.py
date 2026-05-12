@@ -12,10 +12,28 @@ from fastapi.templating import Jinja2Templates
 from typing import Dict, List
 import logging
 
+
+from database.diabetes_db import save_diabetes_prediction
+
+
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Multi-Disease Prediction System", version="1.0.0")
+
+
+from database.db import connect_db, disconnect_db
+
+@app.on_event("startup")
+async def startup():
+    await connect_db()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await disconnect_db()
+
 
 # Templates
 templates = Jinja2Templates(directory="templates")
@@ -272,6 +290,11 @@ async def predict(disease_id: str, request: Request):
         logger.info(
             f"{disease_id} prediction: {result['prediction_text']} ({probability:.2f}%)"
         )
+
+        # Save diabetes prediction to PostgreSQL
+        if disease_id == "diabetes":
+            await save_diabetes_prediction(data, result)
+        
         return JSONResponse(content=result)
 
     except HTTPException:
