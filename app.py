@@ -12,13 +12,75 @@ from fastapi.templating import Jinja2Templates
 from typing import Dict, List
 import logging
 
+#auth imports
+from jose import jwt, JWTError
+from datetime import datetime, timedelta
+from passlib.context import CryptContext
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends
+from pydantic import BaseModel
+
 
 from database.diabetes_db import save_diabetes_prediction
+from database.db import db
 
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+# JWT AUTH CONFIGURATION
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto"
+)
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="signin"
+)
+SECRET_KEY = "super-secret-key"
+
+ALGORITHM = "HS256"
+
+ACCESS_TOKEN_EXPIRE_HOURS = 24
+
+def hash_password(password: str):
+
+    return pwd_context.hash(password)
+
+
+def verify_password(
+    plain_password,
+    hashed_password
+):
+
+    return pwd_context.verify(
+        plain_password,
+        hashed_password
+    )
+
+def create_access_token(data: dict):
+
+    to_encode = data.copy()
+
+    expire = datetime.utcnow() + timedelta(
+        hours=ACCESS_TOKEN_EXPIRE_HOURS
+    )
+
+    to_encode.update({
+        "exp": expire
+    })
+
+    encoded_jwt = jwt.encode(
+        to_encode,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
+    return encoded_jwt
+
+
+
 
 app = FastAPI(title="Multi-Disease Prediction System", version="1.0.0")
 
@@ -502,6 +564,114 @@ async def health_check():
         "status": "healthy",
         "models_loaded": {disease: disease in models for disease in DISEASES},
     }
+
+#signup & sigin
+class SignupSchema(BaseModel):
+    email: str
+    password: str
+    username: str
+    
+class SigninSchema(BaseModel):
+    email: str
+    password: str
+
+@app.post("/signup")
+async def signup(user: SignupSchema):
+
+    existing_user = await db.user.find_unique(
+        where={
+            "email": user.email
+        }
+    )
+
+    if existing_user:
+
+        raise HTTPException(
+            status_code=400,
+            detail="User already exists"
+        )
+
+    hashed_password = hash_password(
+        user.password.strip()
+    )
+
+    await db.user.create(
+        data={
+            "username": user.username,
+            "email": user.email,
+            "password": hashed_password
+        }
+    )
+
+    return {
+        "message": "User created successfully"
+    }
+
+@app.post("/signin")
+async def signin(user: SigninSchema):
+
+    db_user = await db.user.find_unique(
+        where={
+            "email": user.email
+        }
+    )
+
+    if not db_user:
+
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+
+    valid_password = verify_password(
+        user.password.strip(),
+        db_user.password
+    )
+
+    if not valid_password:
+
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+
+    token = create_access_token({
+        "user_id": db_user.id,
+        "email": db_user.email
+    })
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }
+
+@app.get("/profile")
+async def profile(
+    token: str = Depends(oauth2_scheme)
+):
+
+    try:
+
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        return {
+            "message": "Protected Route",
+            "user": payload
+        }
+
+    except JWTError:
+
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token"
+        )   
+
+
+
 
 
 if __name__ == "__main__":
