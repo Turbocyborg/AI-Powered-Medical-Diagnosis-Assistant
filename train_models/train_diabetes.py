@@ -416,4 +416,4 @@ if __name__ == "__main__":
 # ==================================================
 # Best model: XGBoost
 
-# You can now run the Flask application!
+# You can now run the application!

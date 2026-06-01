@@ -136,6 +136,9 @@ DISEASES = {
             "fractal_dimension_worst",
         ],
     },
+    "liver_disease":{
+        
+    }
 }
 
 # Load models

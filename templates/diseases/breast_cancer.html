@@ -105,6 +105,43 @@
     </style>
   </head>
   <body class="gradient-bg">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark px-4 py-3">
+      <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold fs-4" href="/">
+          <i class="fas fa-heartbeat me-2"></i>
+          AI Medical Diagnosis
+        </a>
+
+        <!-- Right Buttons -->
+        <div class="d-flex gap-3">
+          {% if user %}
+          <!-- Logged in user -->
+          <span class="navbar-text text-white me-3">
+            <i class="fas fa-user-circle me-2"></i>
+            {{ user.full_name or user.username }}
+          </span>
+          <a href="/logout" class="btn btn-outline-light rounded-pill px-4">
+            <i class="fas fa-sign-out-alt me-2"></i>
+            Logout
+          </a>
+          {% else %}
+          <!-- Not logged in -->
+          <a href="/login" class="btn btn-outline-light rounded-pill px-4">
+            <i class="fas fa-sign-in-alt me-2"></i>
+            Sign In
+          </a>
+
+          <a href="/signup" class="btn btn-light rounded-pill px-4">
+            <i class="fas fa-user-plus me-2"></i>
+            Sign Up
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
     <div class="container py-5">
       <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -138,6 +175,12 @@
               <h4 class="mb-0">
                 <i class="fas fa-microscope me-2"></i>Tumor Cell Measurements
               </h4>
+              <p class="mb-0 mt-2">
+                <small
+                  ><i class="fas fa-list-ul me-2"></i>30 Tumor
+                  Characteristics</small
+                >
+              </p>
             </div>
             <div class="card-body p-4">
               <div class="alert alert-info">
@@ -606,6 +649,41 @@
             </div>
             <div class="card-body">
               <div id="predictionResult"></div>
+            </div>
+          </div>
+
+          <!-- Information Card -->
+          <div class="card card-custom mt-4">
+            <div class="card-body">
+              <h5 class="section-title">About Breast Cancer Prediction</h5>
+              <p>
+                This AI model uses machine learning to assess breast cancer risk
+                based on fine needle aspirate (FNA) measurements of breast mass
+                cells. The model analyzes
+                <strong>30 tumor characteristics</strong> including:
+              </p>
+              <ul>
+                <li>
+                  <strong>Mean Values:</strong> Radius, texture, perimeter,
+                  area, smoothness, compactness, concavity, concave points,
+                  symmetry, and fractal dimension
+                </li>
+                <li>
+                  <strong>Standard Error Values:</strong> Variability
+                  measurements for all tumor characteristics
+                </li>
+                <li>
+                  <strong>Worst Values:</strong> Largest/mean of three worst
+                  measurements for each characteristic
+                </li>
+              </ul>
+              <p class="mb-0">
+                <strong>Note:</strong> This tool is trained on the Wisconsin
+                Breast Cancer dataset and provides risk assessment for
+                educational purposes. These measurements are typically obtained
+                from medical imaging or biopsy results. Always consult with a
+                healthcare professional for proper medical diagnosis.
+              </p>
             </div>
           </div>
         </div>

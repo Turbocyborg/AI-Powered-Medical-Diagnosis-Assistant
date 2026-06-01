@@ -43,6 +43,7 @@
         padding: 4rem 0;
         text-align: center;
         color: white;
+        margin-top: 30px;
       }
 
       .hero-title {
@@ -90,9 +91,87 @@
         margin-bottom: 1rem;
         color: white;
       }
+
+      .feature-count {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-top: 10px;
+        font-weight: 500;
+      }
+
+      .feature-count i {
+        margin-right: 5px;
+      }
     </style>
   </head>
   <body class="gradient-bg">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark px-4 py-3">
+      <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold fs-3" href="/">
+          <i class="fas fa-heartbeat me-2"></i>
+          AI Medical Diagnosis
+        </a>
+
+        <!-- Right Buttons -->
+        <div class="d-flex gap-3">
+          {% if user %}
+          <!-- Logged in user -->
+          <span class="navbar-text text-white me-3">
+            <i class="fas fa-user-circle me-2"></i>
+            {{ user.full_name or user.username }}
+          </span>
+          <a href="/logout" class="btn btn-outline-light rounded-pill px-4">
+            <i class="fas fa-sign-out-alt me-2"></i>
+            Logout
+          </a>
+          {% else %}
+          <!-- Not logged in -->
+          <a href="/login" class="btn btn-outline-light rounded-pill px-4">
+            <i class="fas fa-sign-in-alt me-2"></i>
+            Sign In
+          </a>
+
+          <a href="/signup" class="btn btn-light rounded-pill px-4">
+            <i class="fas fa-user-plus me-2"></i>
+            Sign Up
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <!-- Success/Error Messages -->
+    {% if success %}
+    <div class="container mt-3">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ success }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+    </div>
+    {% endif %} {% if error %}
+    <div class="container mt-3">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ error }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+    </div>
+    {% endif %}
+
     <!-- Hero Section -->
     <div class="hero-section">
       <div class="container">
@@ -124,9 +203,12 @@
               </div>
               <h3 class="card-title">Diabetes</h3>
               <p class="card-text text-muted">
-                Predict diabetes risk using 21 health indicators from BRFSS
-                dataset
+                Predict diabetes risk using
+                <strong>21 health indicators</strong> from BRFSS dataset
               </p>
+              <div class="feature-count text-primary">
+                <i class="fas fa-list-ul"></i> 21 Features
+              </div>
               <a href="/disease/diabetes" class="btn btn-predict">
                 Start Assessment <i class="fas fa-arrow-right ms-2"></i>
               </a>
@@ -147,9 +229,13 @@
               <h3 class="card-title">Heart Disease</h3>
               <p class="card-text text-muted">
                 <!-- by Jocelyn Dumlao (Kaggle) -->
-                Predict heart disease risk using 12 clinical indicators from
-                Cardiovascular Disease dataset
+                Predict heart disease risk using
+                <strong>12 clinical indicators</strong> from Cardiovascular
+                Disease dataset
               </p>
+              <div class="feature-count text-danger">
+                <i class="fas fa-list-ul"></i> 12 Features
+              </div>
               <a href="/disease/heart_disease" class="btn btn-predict">
                 Start Assessment <i class="fas fa-arrow-right ms-2"></i>
               </a>
@@ -169,8 +255,13 @@
               </div>
               <h3 class="card-title">Breast Cancer</h3>
               <p class="card-text text-muted">
-                Breast cancer risk prediction and screening
+                Breast cancer risk prediction using
+                <strong>30 tumor characteristics</strong> from Wisconsin
+                Diagnostic dataset
               </p>
+              <div class="feature-count text-warning">
+                <i class="fas fa-list-ul"></i> 30 Features
+              </div>
               <a href="/disease/breast_cancer" class="btn btn-predict">
                 Start Assessment <i class="fas fa-arrow-right ms-2"></i>
               </a>
@@ -191,9 +282,13 @@
               <h3 class="card-title">Kidney Disease</h3>
               <p class="card-text text-muted">
                 <!-- by Rabie El Kharoua (Kaggle) -->
-                Predict kidney disease risk using 23 health indicators from
-                Chronic Kidney Disease dataset
+                Predict kidney disease risk using
+                <strong>23 health indicators</strong> from Chronic Kidney
+                Disease dataset
               </p>
+              <div class="feature-count text-info">
+                <i class="fas fa-list-ul"></i> 23 Features
+              </div>
               <a href="/disease/kidney_disease" class="btn btn-predict">
                 Start Assessment <i class="fas fa-arrow-right ms-2"></i>
               </a>
@@ -201,34 +296,53 @@
           </div>
         </div>
 
-        <!-- Liver Disease Card (Coming Soon) -->
+        <!-- Liver Disease Card -->
         <div class="col-md-6 col-lg-4">
-          <div class="card disease-card opacity-75">
+          <div
+            class="card disease-card"
+            onclick="window.location.href = '/disease/liver_disease'"
+          >
             <div class="card-body text-center">
               <div class="disease-icon text-success">
                 <i class="fas fa-lungs"></i>
               </div>
               <h3 class="card-title">Liver Disease</h3>
               <p class="card-text text-muted">
-                Liver disease prediction and monitoring
+                Liver disease prediction using
+                <strong>10 clinical indicators</strong> from Indian Liver
+                Patient dataset
               </p>
-              <button class="btn btn-secondary" disabled>Coming Soon</button>
+              <div class="feature-count text-success">
+                <i class="fas fa-list-ul"></i> 10 Features
+              </div>
+              <a href="/disease/liver_disease" class="btn btn-predict">
+                Start Assessment <i class="fas fa-arrow-right ms-2"></i>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- Pneumonia Card (Coming Soon) -->
+        <!-- Pneumonia Card -->
         <div class="col-md-6 col-lg-4">
-          <div class="card disease-card opacity-75">
+          <div
+            class="card disease-card"
+            onclick="window.location.href = '/disease/pneumonia'"
+          >
             <div class="card-body text-center">
               <div class="disease-icon text-primary">
                 <i class="fas fa-lungs-virus"></i>
               </div>
               <h3 class="card-title">Pneumonia</h3>
               <p class="card-text text-muted">
-                Pneumonia risk prediction and early detection
+                Detect pneumonia from chest X-ray images using
+                <strong>deep learning CNN</strong> with ResNet18 architecture
               </p>
-              <button class="btn btn-secondary" disabled>Coming Soon</button>
+              <div class="feature-count text-primary">
+                <i class="fas fa-image"></i> Image-Based Detection
+              </div>
+              <a href="/disease/pneumonia" class="btn btn-predict">
+                Start Assessment <i class="fas fa-arrow-right ms-2"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -261,9 +375,9 @@
       <!-- Disclaimer -->
       <div class="alert alert-warning mt-4" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
-        <strong>Medical Disclaimer:</strong> This tool is for educational and
-        screening purposes only. Always consult with healthcare professionals
-        for proper medical diagnosis and treatment.
+        <strong>Disclaimer:</strong> This tool is for educational and screening
+        purposes only. Always consult with healthcare professionals for proper
+        medical diagnosis and treatment.
       </div>
     </div>
 

@@ -1,402 +1,641 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Diabetes Risk Prediction</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .card-custom {
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
-        
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        
-        .btn-predict {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 25px;
-            padding: 12px 30px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-predict:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            color: white;
-        }
-        
-        .result-card {
-            border-radius: 15px;
-            border: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-        
-        .risk-low { border-left: 5px solid #28a745; }
-        .risk-moderate { border-left: 5px solid #ffc107; }
-        .risk-high { border-left: 5px solid #dc3545; }
-        
-        .loading { display: none; }
-        .form-group { margin-bottom: 1rem; }
-        
-        .section-title {
-            color: #667eea;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 0.5rem;
-        }
-        
-        .recommendation-item {
-            background: #f8f9ff;
-            border-left: 4px solid #667eea;
-            padding: 10px 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        
-        .back-btn {
-            color: white;
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-        
-        .back-btn:hover {
-            opacity: 0.8;
-            color: white;
-        }
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: none;
+      }
+
+      .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      }
+
+      .btn-predict {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-predict:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        color: white;
+      }
+
+      .result-card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+      }
+
+      .risk-low {
+        border-left: 5px solid #28a745;
+      }
+      .risk-moderate {
+        border-left: 5px solid #ffc107;
+      }
+      .risk-high {
+        border-left: 5px solid #dc3545;
+      }
+
+      .loading {
+        display: none;
+      }
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .section-title {
+        color: #667eea;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 0.5rem;
+      }
+
+      .recommendation-item {
+        background: #f8f9ff;
+        border-left: 4px solid #667eea;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+      }
+
+      .back-btn {
+        color: white;
+        text-decoration: none;
+        transition: opacity 0.3s;
+      }
+
+      .back-btn:hover {
+        opacity: 0.8;
+        color: white;
+      }
     </style>
-</head>
-<body class="gradient-bg">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <!-- Back Button -->
-                <a href="/" class="back-btn mb-3 d-inline-block">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Disease Selection
-                </a>
-                
-                <!-- Header -->
-                <div class="text-center mb-5">
-                    <h1 class="text-white mb-3">
-                        <i class="fas fa-syringe me-3"></i>
-                        Diabetes Risk Prediction
-                    </h1>
-                    <p class="text-white-50">Enter your health information to assess your diabetes risk using AI</p>
-                </div>
+  </head>
+  <body class="gradient-bg">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark px-4 py-3">
+      <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold fs-4" href="/">
+          <i class="fas fa-heartbeat me-2"></i>
+          AI Medical Diagnosis
+        </a>
 
-                {% if not model_available %}
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Model not available. Please train the diabetes model first by running: <code>python train_models/train_diabetes.py</code>
-                </div>
-                {% endif %}
+        <!-- Right Buttons -->
+        <div class="d-flex gap-3">
+          {% if user %}
+          <!-- Logged in user -->
+          <span class="navbar-text text-white me-3">
+            <i class="fas fa-user-circle me-2"></i>
+            {{ user.full_name or user.username }}
+          </span>
+          <a href="/logout" class="btn btn-outline-light rounded-pill px-4">
+            <i class="fas fa-sign-out-alt me-2"></i>
+            Logout
+          </a>
+          {% else %}
+          <!-- Not logged in -->
+          <a href="/login" class="btn btn-outline-light rounded-pill px-4">
+            <i class="fas fa-sign-in-alt me-2"></i>
+            Sign In
+          </a>
 
-                <!-- Main Form Card -->
-                <div class="card card-custom">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h4 class="mb-0"><i class="fas fa-user-md me-2"></i>Health Assessment Form</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <form id="predictionForm">
-                            <!-- Demographics Section -->
-                            <h5 class="section-title">Demographics</h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Sex" class="form-label">Sex</label>
-                                        <select class="form-select" id="Sex" name="Sex" required>
-                                            <option value="">Select Gender</option>
-                                            <option value="0">Female</option>
-                                            <option value="1">Male</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Age" class="form-label">Age Category</label>
-                                        <select class="form-select" id="Age" name="Age" required>
-                                            <option value="">Select Age Group</option>
-                                            <option value="1">18-24</option>
-                                            <option value="2">25-29</option>
-                                            <option value="3">30-34</option>
-                                            <option value="4">35-39</option>
-                                            <option value="5">40-44</option>
-                                            <option value="6">45-49</option>
-                                            <option value="7">50-54</option>
-                                            <option value="8">55-59</option>
-                                            <option value="9">60-64</option>
-                                            <option value="10">65-69</option>
-                                            <option value="11">70-74</option>
-                                            <option value="12">75-79</option>
-                                            <option value="13">80+</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Education" class="form-label">Education Level</label>
-                                        <select class="form-select" id="Education" name="Education" required>
-                                            <option value="">Select Education Level</option>
-                                            <option value="1">Never attended school</option>
-                                            <option value="2">Elementary</option>
-                                            <option value="3">Some high school</option>
-                                            <option value="4">High school graduate</option>
-                                            <option value="5">Some college</option>
-                                            <option value="6">College graduate</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Income" class="form-label">Income Level</label>
-                                        <select class="form-select" id="Income" name="Income" required>
-                                            <option value="">Select Income Level</option>
-                                            <option value="1">Less than ₹ 8.95 lakh</option>
-                                            <option value="2">₹ 8.95 lakh to ₹ 13.42 lakh</option>
-                                            <option value="3">₹ 13.42 lakh to ₹ 17.90 lakh</option>
-                                            <option value="4">₹ 17.90 lakh to ₹ 22.37 lakh</option>
-                                            <option value="5">₹ 22.37 lakh to ₹ 31.38 lakh</option>
-                                            <option value="6">₹ 31.38 lakh to ₹ 44.74 lakh</option>
-                                            <option value="7">₹ 44.74 lakh to ₹ 67.11 lakh</option>
-                                            <option value="8">₹ 67.11 lakh or more</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Health Conditions Section -->
-                            <h5 class="section-title mt-4">Health Conditions</h5>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="BMI" class="form-label">BMI</label>
-                                        <input type="number" class="form-control" id="BMI" name="BMI" 
-                                               min="10" max="60" step="0.1" required>
-                                        <small class="form-text text-muted">Body Mass Index (kg/m²)</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="GenHlth" class="form-label">General Health</label>
-                                        <select class="form-select" id="GenHlth" name="GenHlth" required>
-                                            <option value="">Select Health Status</option>
-                                            <option value="1">Excellent</option>
-                                            <option value="2">Very Good</option>
-                                            <option value="3">Good</option>
-                                            <option value="4">Fair</option>
-                                            <option value="5">Poor</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="MentHlth" class="form-label">Mental Health Days</label>
-                                        <input type="number" class="form-control" id="MentHlth" name="MentHlth" 
-                                               min="0" max="30" required>
-                                        <small class="form-text text-muted">Poor mental health days (0-30)</small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="PhysHlth" class="form-label">Physical Health Days</label>
-                                        <input type="number" class="form-control" id="PhysHlth" name="PhysHlth" 
-                                               min="0" max="30" required>
-                                        <small class="form-text text-muted">Poor physical health days (0-30)</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <label class="form-label">Medical Conditions</label>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="HighBP" name="HighBP" value="1">
-                                                <label class="form-check-label" for="HighBP">High Blood Pressure</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="HighChol" name="HighChol" value="1">
-                                                <label class="form-check-label" for="HighChol">High Cholesterol</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="Stroke" name="Stroke" value="1">
-                                                <label class="form-check-label" for="Stroke">Stroke History</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="HeartDiseaseorAttack" name="HeartDiseaseorAttack" value="1">
-                                                <label class="form-check-label" for="HeartDiseaseorAttack">Heart Disease</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="DiffWalk" name="DiffWalk" value="1">
-                                                <label class="form-check-label" for="DiffWalk">Difficulty Walking</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="CholCheck" name="CholCheck" value="1">
-                                                <label class="form-check-label" for="CholCheck">Cholesterol Check (5 years)</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Lifestyle Section -->
-                            <h5 class="section-title mt-4">Lifestyle Factors</h5>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label class="form-label">Lifestyle Habits</label>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="Smoker" name="Smoker" value="1">
-                                                <label class="form-check-label" for="Smoker">Current/Former Smoker</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="PhysActivity" name="PhysActivity" value="1">
-                                                <label class="form-check-label" for="PhysActivity">Regular Physical Activity</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="Fruits" name="Fruits" value="1">
-                                                <label class="form-check-label" for="Fruits">Daily Fruit Consumption</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="Veggies" name="Veggies" value="1">
-                                                <label class="form-check-label" for="Veggies">Daily Vegetable Consumption</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="HvyAlcoholConsump" name="HvyAlcoholConsump" value="1">
-                                                <label class="form-check-label" for="HvyAlcoholConsump">Heavy Alcohol Consumption</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Healthcare Access Section -->
-                            <h5 class="section-title mt-4">Healthcare Access</h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="AnyHealthcare" name="AnyHealthcare" value="1">
-                                        <label class="form-check-label" for="AnyHealthcare">Have Health Insurance</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="NoDocbcCost" name="NoDocbcCost" value="1">
-                                        <label class="form-check-label" for="NoDocbcCost">Unable to See Doctor Due to Cost</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-predict btn-lg" {% if not model_available %}disabled{% endif %}>
-                                    <i class="fas fa-brain me-2"></i>
-                                    Predict Diabetes Risk
-                                </button>
-                            </div>
-
-                            <!-- Loading Indicator -->
-                            <div class="text-center mt-3 loading" id="loading">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2">Analyzing your health data...</p>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Result Card -->
-                <div id="resultCard" class="card result-card" style="display: none;">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Prediction Results</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="predictionResult"></div>
-                    </div>
-                </div>
-            </div>
+          <a href="/signup" class="btn btn-light rounded-pill px-4">
+            <i class="fas fa-user-plus me-2"></i>
+            Sign Up
+          </a>
+          {% endif %}
         </div>
+      </div>
+    </nav>
+
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <!-- Back Button -->
+          <a href="/" class="back-btn mb-3 d-inline-block">
+            <i class="fas fa-arrow-left me-2"></i>Back to Disease Selection
+          </a>
+
+          <!-- Header -->
+          <div class="text-center mb-5">
+            <h1 class="text-white mb-3">
+              <i class="fas fa-syringe me-3"></i>
+              Diabetes Risk Prediction
+            </h1>
+            <p class="text-white-50">
+              Enter your health information to assess your diabetes risk using
+              AI
+            </p>
+          </div>
+
+          {% if not model_available %}
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Model not available. Please train the diabetes model first by
+            running: <code>python train_models/train_diabetes.py</code>
+          </div>
+          {% endif %}
+
+          <!-- Main Form Card -->
+          <div class="card card-custom">
+            <div class="card-header bg-primary text-white text-center">
+              <h4 class="mb-0">
+                <i class="fas fa-user-md me-2"></i>Health Assessment Form
+              </h4>
+              <p class="mb-0 mt-2">
+                <small
+                  ><i class="fas fa-list-ul me-2"></i>21 Health
+                  Indicators</small
+                >
+              </p>
+            </div>
+            <div class="card-body p-4">
+              <form id="predictionForm">
+                <!-- Demographics Section -->
+                <h5 class="section-title">Demographics</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="Sex" class="form-label">Sex</label>
+                      <select class="form-select" id="Sex" name="Sex" required>
+                        <option value="">Select Gender</option>
+                        <option value="0">Female</option>
+                        <option value="1">Male</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="Age" class="form-label">Age Category</label>
+                      <select class="form-select" id="Age" name="Age" required>
+                        <option value="">Select Age Group</option>
+                        <option value="1">18-24</option>
+                        <option value="2">25-29</option>
+                        <option value="3">30-34</option>
+                        <option value="4">35-39</option>
+                        <option value="5">40-44</option>
+                        <option value="6">45-49</option>
+                        <option value="7">50-54</option>
+                        <option value="8">55-59</option>
+                        <option value="9">60-64</option>
+                        <option value="10">65-69</option>
+                        <option value="11">70-74</option>
+                        <option value="12">75-79</option>
+                        <option value="13">80+</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="Education" class="form-label"
+                        >Education Level</label
+                      >
+                      <select
+                        class="form-select"
+                        id="Education"
+                        name="Education"
+                        required
+                      >
+                        <option value="">Select Education Level</option>
+                        <option value="1">Never attended school</option>
+                        <option value="2">Elementary</option>
+                        <option value="3">Some high school</option>
+                        <option value="4">High school graduate</option>
+                        <option value="5">Some college</option>
+                        <option value="6">College graduate</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="Income" class="form-label"
+                        >Income Level</label
+                      >
+                      <select
+                        class="form-select"
+                        id="Income"
+                        name="Income"
+                        required
+                      >
+                        <option value="">Select Income Level</option>
+                        <option value="1">Less than ₹ 8.95 lakh</option>
+                        <option value="2">₹ 8.95 lakh to ₹ 13.42 lakh</option>
+                        <option value="3">₹ 13.42 lakh to ₹ 17.90 lakh</option>
+                        <option value="4">₹ 17.90 lakh to ₹ 22.37 lakh</option>
+                        <option value="5">₹ 22.37 lakh to ₹ 31.38 lakh</option>
+                        <option value="6">₹ 31.38 lakh to ₹ 44.74 lakh</option>
+                        <option value="7">₹ 44.74 lakh to ₹ 67.11 lakh</option>
+                        <option value="8">₹ 67.11 lakh or more</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Health Conditions Section -->
+                <h5 class="section-title mt-4">Health Conditions</h5>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="BMI" class="form-label">BMI</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="BMI"
+                        name="BMI"
+                        min="10"
+                        max="60"
+                        step="0.1"
+                        required
+                      />
+                      <small class="form-text text-muted"
+                        >Body Mass Index (kg/m²)</small
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="GenHlth" class="form-label"
+                        >General Health</label
+                      >
+                      <select
+                        class="form-select"
+                        id="GenHlth"
+                        name="GenHlth"
+                        required
+                      >
+                        <option value="">Select Health Status</option>
+                        <option value="1">Excellent</option>
+                        <option value="2">Very Good</option>
+                        <option value="3">Good</option>
+                        <option value="4">Fair</option>
+                        <option value="5">Poor</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="MentHlth" class="form-label"
+                        >Mental Health Days</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="MentHlth"
+                        name="MentHlth"
+                        min="0"
+                        max="30"
+                        required
+                      />
+                      <small class="form-text text-muted"
+                        >Poor mental health days (0-30)</small
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="PhysHlth" class="form-label"
+                        >Physical Health Days</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="PhysHlth"
+                        name="PhysHlth"
+                        min="0"
+                        max="30"
+                        required
+                      />
+                      <small class="form-text text-muted"
+                        >Poor physical health days (0-30)</small
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <label class="form-label">Medical Conditions</label>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="HighBP"
+                            name="HighBP"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="HighBP"
+                            >High Blood Pressure</label
+                          >
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="HighChol"
+                            name="HighChol"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="HighChol"
+                            >High Cholesterol</label
+                          >
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="Stroke"
+                            name="Stroke"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="Stroke"
+                            >Stroke History</label
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="HeartDiseaseorAttack"
+                            name="HeartDiseaseorAttack"
+                            value="1"
+                          />
+                          <label
+                            class="form-check-label"
+                            for="HeartDiseaseorAttack"
+                            >Heart Disease</label
+                          >
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="DiffWalk"
+                            name="DiffWalk"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="DiffWalk"
+                            >Difficulty Walking</label
+                          >
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="CholCheck"
+                            name="CholCheck"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="CholCheck"
+                            >Cholesterol Check (5 years)</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Lifestyle Section -->
+                <h5 class="section-title mt-4">Lifestyle Factors</h5>
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="form-label">Lifestyle Habits</label>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="Smoker"
+                            name="Smoker"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="Smoker"
+                            >Current/Former Smoker</label
+                          >
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="PhysActivity"
+                            name="PhysActivity"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="PhysActivity"
+                            >Regular Physical Activity</label
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="Fruits"
+                            name="Fruits"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="Fruits"
+                            >Daily Fruit Consumption</label
+                          >
+                        </div>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="Veggies"
+                            name="Veggies"
+                            value="1"
+                          />
+                          <label class="form-check-label" for="Veggies"
+                            >Daily Vegetable Consumption</label
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="HvyAlcoholConsump"
+                            name="HvyAlcoholConsump"
+                            value="1"
+                          />
+                          <label
+                            class="form-check-label"
+                            for="HvyAlcoholConsump"
+                            >Heavy Alcohol Consumption</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Healthcare Access Section -->
+                <h5 class="section-title mt-4">Healthcare Access</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="AnyHealthcare"
+                        name="AnyHealthcare"
+                        value="1"
+                      />
+                      <label class="form-check-label" for="AnyHealthcare"
+                        >Have Health Insurance</label
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="NoDocbcCost"
+                        name="NoDocbcCost"
+                        value="1"
+                      />
+                      <label class="form-check-label" for="NoDocbcCost"
+                        >Unable to See Doctor Due to Cost</label
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                  <button
+                    type="submit"
+                    class="btn btn-predict btn-lg"
+                    {%
+                    if
+                    not
+                    model_available
+                    %}disabled{%
+                    endif
+                    %}
+                  >
+                    <i class="fas fa-brain me-2"></i>
+                    Predict Diabetes Risk
+                  </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="text-center mt-3 loading" id="loading">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <p class="mt-2">Analyzing your health data...</p>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Result Card -->
+          <div id="resultCard" class="card result-card" style="display: none">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="fas fa-chart-line me-2"></i>Prediction Results
+              </h5>
+            </div>
+            <div class="card-body">
+              <div id="predictionResult"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('resultCard').style.display = 'none';
-            
-            const data = {};
-            const inputs = e.target.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                if (input.type === 'checkbox') {
-                    data[input.name] = input.checked ? '1' : '0';
-                } else {
-                    data[input.name] = input.value;
-                }
-            });
-            
-            try {
-                const response = await fetch('/predict/diabetes', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                displayResult(result);
-                
-            } catch (error) {
-                console.error('Error:', error);
-                displayError('An error occurred while making the prediction.');
-            } finally {
-                document.getElementById('loading').style.display = 'none';
+      document
+        .getElementById("predictionForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          document.getElementById("loading").style.display = "block";
+          document.getElementById("resultCard").style.display = "none";
+
+          const data = {};
+          const inputs = e.target.querySelectorAll("input, select");
+          inputs.forEach((input) => {
+            if (input.type === "checkbox") {
+              data[input.name] = input.checked ? "1" : "0";
+            } else {
+              data[input.name] = input.value;
             }
+          });
+
+          try {
+            const response = await fetch("/predict/diabetes", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            displayResult(result);
+          } catch (error) {
+            console.error("Error:", error);
+            displayError("An error occurred while making the prediction.");
+          } finally {
+            document.getElementById("loading").style.display = "none";
+          }
         });
-        
-        function displayResult(result) {
-            const resultCard = document.getElementById('resultCard');
-            const resultContent = document.getElementById('predictionResult');
-            
-            if (result.success) {
-                let riskClass = 'risk-low';
-                if (result.risk_level === 'Moderate') riskClass = 'risk-moderate';
-                else if (result.risk_level === 'High') riskClass = 'risk-high';
-                
-                resultCard.className = `card result-card ${riskClass}`;
-                
-                let html = `
+
+      function displayResult(result) {
+        const resultCard = document.getElementById("resultCard");
+        const resultContent = document.getElementById("predictionResult");
+
+        if (result.success) {
+          let riskClass = "risk-low";
+          if (result.risk_level === "Moderate") riskClass = "risk-moderate";
+          else if (result.risk_level === "High") riskClass = "risk-high";
+
+          resultCard.className = `card result-card ${riskClass}`;
+
+          let html = `
                     <div class="row">
                         <div class="col-md-6">
                             <h4 style="color: ${result.risk_color};">
-                                <i class="fas fa-${result.prediction == 1 ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
+                                <i class="fas fa-${result.prediction == 1 ? "exclamation-triangle" : "check-circle"} me-2"></i>
                                 ${result.prediction_text}
                             </h4>
                             <p><strong>Risk Probability:</strong> ${result.probability}%</p>
@@ -409,7 +648,7 @@
                                         <circle cx="60" cy="60" r="50" stroke="#e0e0e0" stroke-width="8" fill="none"/>
                                         <circle cx="60" cy="60" r="50" stroke="${result.risk_color}" stroke-width="8" 
                                                fill="none" stroke-dasharray="314" 
-                                               stroke-dashoffset="${314 - (314 * result.probability / 100)}"/>
+                                               stroke-dashoffset="${314 - (314 * result.probability) / 100}"/>
                                     </svg>
                                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
                                         <strong style="color: ${result.risk_color}; font-size: 18px;">${result.probability}%</strong>
@@ -419,42 +658,89 @@
                         </div>
                     </div>
                 `;
-                
-                if (result.recommendations && result.recommendations.length > 0) {
-                    html += `<hr><h5><i class="fas fa-lightbulb me-2"></i>Personalized Recommendations</h5>`;
-                    result.recommendations.forEach(rec => {
-                        html += `<div class="recommendation-item"><i class="fas fa-arrow-right me-2"></i>${rec}</div>`;
-                    });
-                }
-                
-                resultContent.innerHTML = html;
-            } else {
-                resultContent.innerHTML = `
+
+          if (result.recommendations && result.recommendations.length > 0) {
+            html += `<hr><h5><i class="fas fa-lightbulb me-2"></i>Personalized Recommendations</h5>`;
+            result.recommendations.forEach((rec) => {
+              html += `<div class="recommendation-item"><i class="fas fa-arrow-right me-2"></i>${rec}</div>`;
+            });
+          }
+
+          resultContent.innerHTML = html;
+        } else {
+          resultContent.innerHTML = `
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         <strong>Error:</strong> ${result.error}
                     </div>
                 `;
-            }
-            
-            resultCard.style.display = 'block';
-            resultCard.scrollIntoView({ behavior: 'smooth' });
         }
-        
-        function displayError(message) {
-            const resultCard = document.getElementById('resultCard');
-            const resultContent = document.getElementById('predictionResult');
-            
-            resultContent.innerHTML = `
+
+        resultCard.style.display = "block";
+        resultCard.scrollIntoView({ behavior: "smooth" });
+      }
+
+      function displayError(message) {
+        const resultCard = document.getElementById("resultCard");
+        const resultContent = document.getElementById("predictionResult");
+
+        resultContent.innerHTML = `
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     <strong>Error:</strong> ${message}
                 </div>
             `;
-            
-            resultCard.style.display = 'block';
-            resultCard.scrollIntoView({ behavior: 'smooth' });
-        }
+
+        resultCard.style.display = "block";
+        resultCard.scrollIntoView({ behavior: "smooth" });
+      }
     </script>
-</body>
+
+    <!-- Information Card -->
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card card-custom mt-4">
+            <div class="card-body">
+              <h5 class="section-title">About Diabetes Prediction</h5>
+              <p>
+                This AI model uses machine learning to assess diabetes risk
+                based on comprehensive health indicators from the BRFSS
+                (Behavioral Risk Factor Surveillance System) dataset. The model
+                analyzes <strong>21 health indicators</strong> including:
+              </p>
+              <ul>
+                <li>
+                  <strong>Demographics:</strong> Age, gender, education, and
+                  income level
+                </li>
+                <li>
+                  <strong>Health Conditions:</strong> BMI, blood pressure,
+                  cholesterol, heart disease, and stroke history
+                </li>
+                <li>
+                  <strong>Lifestyle Factors:</strong> Physical activity,
+                  smoking, alcohol consumption, diet (fruits & vegetables)
+                </li>
+                <li>
+                  <strong>Health Status:</strong> General health, mental health
+                  days, physical health days, difficulty walking
+                </li>
+                <li>
+                  <strong>Healthcare Access:</strong> Insurance coverage and
+                  cost barriers
+                </li>
+              </ul>
+              <p class="mb-0">
+                <strong>Note:</strong> This tool is trained on the BRFSS dataset
+                and provides risk assessment for educational purposes. Always
+                consult with healthcare professionals for proper medical
+                diagnosis and treatment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

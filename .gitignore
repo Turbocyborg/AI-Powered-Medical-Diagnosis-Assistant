@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Model files (optional - uncomment if models are too large)
+# models/**/*.pth
+# models/**/*.pkl
+
+# Data files (optional - uncomment if data is too large)
+# data/
+
+# Test files
+test_*.py
+*_test.py
+
+# Documentation drafts
+*_DRAFT.md
+*_OLD.md
+*_BACKUP.md
